@@ -7,7 +7,7 @@ import '../../widgets/filter_bottom_sheet.dart';
 import 'book_detail_screen.dart';
 
 class CatalogScreen extends StatefulWidget {
-  const CatalogScreen({Key? key}) : super(key: key);
+  const CatalogScreen({super.key});
 
   @override
   State<CatalogScreen> createState() => _CatalogScreenState();

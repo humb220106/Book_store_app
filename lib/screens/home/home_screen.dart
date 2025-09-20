@@ -6,8 +6,9 @@ import 'catalog_screen.dart';
 import 'search_screen.dart';
 import '../cart/cart_screen.dart'; 
 
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -38,10 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _navigateToPage(Widget? page, String pageName) {
     if (page != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => page),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) => page));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -99,10 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) =>
                                   const Icon(
-                                Icons.book,
-                                size: 60,
-                                color: Colors.brown,
-                              ),
+                                    Icons.book,
+                                    size: 60,
+                                    color: Colors.brown,
+                                  ),
                             ),
                           ),
                         ),
@@ -164,8 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.menu_book, color: Colors.brown),
-            onPressed: () =>
-                _navigateToPage(const CatalogScreen(), "Catalog"),
+            onPressed: () => _navigateToPage(const CatalogScreen(), "Catalog"),
             tooltip: "Browse Catalog",
           ),
           IconButton(
@@ -202,20 +199,26 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Featured Books",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              "Featured Books",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             _buildBookList(_featuredBooks),
             const SizedBox(height: 24),
 
-            const Text("New Arrivals",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              "New Arrivals",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             _buildBookList(_newArrivals),
             const SizedBox(height: 24),
 
-            const Text("Bestsellers",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              "Bestsellers",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             _buildBookList(_bestsellers),
             const SizedBox(height: 24),
@@ -228,12 +231,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: const Text("Browse All Books"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.brown,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   textStyle: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

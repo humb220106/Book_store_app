@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ReviewList extends StatelessWidget {
   final String bookId;
 
-  const ReviewList({Key? key, required this.bookId}) : super(key: key);
+  const ReviewList({super.key, required this.bookId});
 
   @override
   Widget build(BuildContext context) {

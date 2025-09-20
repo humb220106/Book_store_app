@@ -6,7 +6,7 @@ import '../../widgets/review_list.dart';  // We'll create this
 class BookDetailScreen extends StatelessWidget {
   final Book book;
 
-  const BookDetailScreen({Key? key, required this.book}) : super(key: key);
+  const BookDetailScreen({super.key, required this.book});
 
   void _addToCart(BuildContext context) {
     CartService.addToCart(book);
