@@ -17,6 +17,8 @@ import 'screens/wishlist/wishlist_screen.dart';
 import 'screens/cart/cart_screen.dart';
 import 'screens/orders/order_history_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
+import '../../models/book.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +60,11 @@ class BookApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/wishlist': (context) => const WishlistScreen(),
-        '/cart': (context) => const CartScreen(),
+       '/cart': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as List<Book>;
+           return CartScreen(cartItems: args);
+            },
+
         '/orders': (context) => const OrderHistoryScreen(),
         '/admin-dashboard': (context) => const AdminDashboardScreen(),
       },
