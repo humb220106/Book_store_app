@@ -4,7 +4,7 @@ import '../../models/book.dart';
 class CartScreen extends StatefulWidget {
   final List<Book> cartItems;
 
-  const CartScreen({Key? key, required this.cartItems}) : super(key: key);
+  const CartScreen({super.key, required this.cartItems});
 
   @override
   State<CartScreen> createState() => _CartScreenState();

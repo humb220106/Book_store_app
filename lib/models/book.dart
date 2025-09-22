@@ -10,6 +10,7 @@ class Book {
   final double price;
   final double rating;
   final int reviewCount;
+  final bool isFeatured;
   final bool isBestseller;
   final bool isNewArrival;
   final DateTime createdAt;
@@ -24,6 +25,7 @@ class Book {
     required this.price,
     required this.rating,
     required this.reviewCount,
+    this.isFeatured = false,
     this.isBestseller = false,
     this.isNewArrival = false,
     required this.createdAt,
@@ -55,6 +57,7 @@ class Book {
       price: (data['price'] as num?)?.toDouble() ?? 0.0,
       rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
       reviewCount: (data['reviewCount'] as num?)?.toInt() ?? 0,
+      isFeatured: (data['isFeatured'] as bool?) ?? false,
       isBestseller: (data['isBestseller'] as bool?) ?? false,
       isNewArrival: (data['isNewArrival'] as bool?) ?? false,
       createdAt: createdAt,
@@ -76,6 +79,7 @@ class Book {
       'price': price,
       'rating': rating,
       'reviewCount': reviewCount,
+      'isFeatured': isFeatured,
       'isBestseller': isBestseller,
       'isNewArrival': isNewArrival,
       'createdAt': Timestamp.fromDate(createdAt),

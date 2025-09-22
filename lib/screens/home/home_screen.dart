@@ -4,8 +4,8 @@ import '../../services/book_service.dart';
 import 'book_detail_screen.dart';
 import 'catalog_screen.dart';
 import 'search_screen.dart';
-import '../cart/cart_screen.dart'; 
-
+import '../cart/cart_screen.dart';
+import '../wishlist/wishlist_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,9 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Book> _featuredBooks = [];
   List<Book> _newArrivals = [];
   List<Book> _bestsellers = [];
-  List<Book> _cartItems = [];
-
-
+  final List<Book> _cartItems = [];
 
   @override
   void initState() {
@@ -172,7 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.favorite_border, color: Colors.brown),
-            onPressed: () => _navigateToPage(null, "Wishlist"),
+            onPressed: () =>
+                _navigateToPage(const WishlistScreen(), "Wishlist"),
             tooltip: "Wishlist",
           ),
           IconButton(
@@ -180,18 +179,12 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () => _navigateToPage(null, "Profile"),
             tooltip: "Profile",
           ),
-            IconButton(
-  icon: const Icon(Icons.shopping_cart, color: Colors.brown),
-  onPressed: () {
-    Navigator.pushNamed(
-      context,
-      '/cart',
-      arguments: _cartItems, // pass the cart list here
-    );
-  },
-  tooltip: "Cart",
-),
-
+          IconButton(
+            icon: const Icon(Icons.shopping_cart, color: Colors.brown),
+            onPressed: () =>
+                _navigateToPage(CartScreen(cartItems: _cartItems), "Cart"),
+            tooltip: "Cart",
+          ),
         ],
       ),
       body: SingleChildScrollView(
