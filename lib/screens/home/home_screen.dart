@@ -4,7 +4,7 @@ import '../../services/book_service.dart';
 import 'book_detail_screen.dart';
 import 'catalog_screen.dart';
 import 'search_screen.dart';
-import '../cart/cart_screen.dart'; 
+import '../cart/cart_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -19,8 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Book> _bestsellers = [];
   List<Book> _cartItems = [];
 
-
-
   @override
   void initState() {
     super.initState();
@@ -34,22 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _newArrivals = allBooks.where((b) => b.isNewArrival).take(5).toList();
       _bestsellers = allBooks.where((b) => b.isBestseller).take(5).toList();
     });
-  }
-
-  void _navigateToPage(Widget? page, String pageName) {
-    if (page != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => page),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("$pageName page is not available yet."),
-          backgroundColor: Colors.brown,
-        ),
-      );
-    }
   }
 
   void _navigateToBookDetail(Book book) {
@@ -164,37 +146,49 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.menu_book, color: Colors.brown),
-            onPressed: () =>
-                _navigateToPage(const CatalogScreen(), "Catalog"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CatalogScreen()),
+              );
+            },
             tooltip: "Browse Catalog",
           ),
           IconButton(
             icon: const Icon(Icons.search, color: Colors.brown),
-            onPressed: () => _navigateToPage(const SearchScreen(), "Search"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SearchScreen()),
+              );
+            },
             tooltip: "Search",
           ),
           IconButton(
             icon: const Icon(Icons.favorite_border, color: Colors.brown),
-            onPressed: () => _navigateToPage(null, "Wishlist"),
+            onPressed: () {
+              Navigator.pushNamed(context, '/wishlist');
+            },
             tooltip: "Wishlist",
           ),
           IconButton(
             icon: const Icon(Icons.person, color: Colors.brown),
-            onPressed: () => _navigateToPage(null, "Profile"),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
             tooltip: "Profile",
           ),
-            IconButton(
-  icon: const Icon(Icons.shopping_cart, color: Colors.brown),
-  onPressed: () {
-    Navigator.pushNamed(
-      context,
-      '/cart',
-      arguments: _cartItems, // pass the cart list here
-    );
-  },
-  tooltip: "Cart",
-),
-
+          IconButton(
+            icon: const Icon(Icons.shopping_cart, color: Colors.brown),
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                '/cart',
+                arguments: _cartItems, // pass the cart list here
+              );
+            },
+            tooltip: "Cart",
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -222,8 +216,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
             Center(
               child: ElevatedButton.icon(
-                onPressed: () =>
-                    _navigateToPage(const CatalogScreen(), "Catalog"),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CatalogScreen()),
+                  );
+                },
                 icon: const Icon(Icons.menu_book),
                 label: const Text("Browse All Books"),
                 style: ElevatedButton.styleFrom(
