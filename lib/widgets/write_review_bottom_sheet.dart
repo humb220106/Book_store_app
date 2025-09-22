@@ -8,10 +8,10 @@ class WriteReviewBottomSheet extends StatefulWidget {
   final VoidCallback onReviewSubmitted;
 
   const WriteReviewBottomSheet({
-    Key? key,
+    super.key,
     required this.bookId,
     required this.onReviewSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   State<WriteReviewBottomSheet> createState() => _WriteReviewBottomSheetState();

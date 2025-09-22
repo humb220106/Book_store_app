@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../../utils/app_colors.dart';
-import '../../utils/app_styles.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,20 +23,26 @@ class _LoginScreenState extends State<LoginScreen> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      // Admin default login
+      // ✅ Local Admin Default Login (bypass Firebase)
       if (email == "admin@bookapp.com" && password == "admin123") {
-        Navigator.pushReplacementNamed(context, '/admin-dashboard');
+        setState(() => _isLoading = false); // reset spinner
+        Navigator.pushReplacementNamed(context, '/admin-dashboard',  arguments: "admin@bookapp.com");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Welcome Admin")),
+        );
         return;
       }
 
+      // ✅ Normal Firebase user login
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? "Login failed")),
       );
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -55,13 +59,14 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       await _auth.signInWithCredential(credential);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/profile');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Google login failed")),
       );
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -70,8 +75,10 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final result = await FacebookAuth.instance.login();
       if (result.status == LoginStatus.success) {
-        final credential = FacebookAuthProvider.credential(result.accessToken!.token);
+        final credential =
+            FacebookAuthProvider.credential(result.accessToken!.token);
         await _auth.signInWithCredential(credential);
+        if (!mounted) return;
         Navigator.pushReplacementNamed(context, '/profile');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -83,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
         const SnackBar(content: Text("Facebook login failed")),
       );
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -153,9 +160,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     IconButton(
                       onPressed: _loginWithGoogle,
-                      icon: Image.asset("assets/icons/google.png", width: 40, height: 40),
+                      icon: Image.asset("assets/icons/google.png",
+                          width: 40, height: 40),
                     ),
                     const SizedBox(width: 20),
+                    // Uncomment if you want Facebook login:
                     // IconButton(
                     //   onPressed: _loginWithFacebook,
                     //   icon: Image.asset("assets/icons/facebook.png", width: 40, height: 40),

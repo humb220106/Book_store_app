@@ -29,6 +29,7 @@ void main() async {
   );
   
   runApp(const BookApp());
+  
 }
 
 class BookApp extends StatelessWidget {
@@ -66,7 +67,10 @@ class BookApp extends StatelessWidget {
             },
 
         '/orders': (context) => const OrderHistoryScreen(),
-        '/admin-dashboard': (context) => const AdminDashboardScreen(),
+        '/admin-dashboard': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as String;
+          return AdminDashboardScreen(email: args);
+        },
       },
     );
   }

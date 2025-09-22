@@ -5,9 +5,11 @@ import 'book_detail_screen.dart';
 import 'catalog_screen.dart';
 import 'search_screen.dart';
 import '../cart/cart_screen.dart';
+import '../wishlist/wishlist_screen.dart';
+import '../profile/profile_screen.dart'; 
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -17,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Book> _featuredBooks = [];
   List<Book> _newArrivals = [];
   List<Book> _bestsellers = [];
-  List<Book> _cartItems = [];
+  final List<Book> _cartItems = [];
 
   @override
   void initState() {
@@ -81,10 +83,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) =>
                                   const Icon(
-                                Icons.book,
-                                size: 60,
-                                color: Colors.brown,
-                              ),
+                                    Icons.book,
+                                    size: 60,
+                                    color: Colors.brown,
+                                  ),
                             ),
                           ),
                         ),
@@ -167,24 +169,25 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.favorite_border, color: Colors.brown),
             onPressed: () {
-              Navigator.pushNamed(context, '/wishlist');
+              Navigator.pushNamed(context, '/wishlist'); // ✅ uses route
             },
             tooltip: "Wishlist",
           ),
           IconButton(
             icon: const Icon(Icons.person, color: Colors.brown),
             onPressed: () {
-              Navigator.pushNamed(context, '/profile');
+              Navigator.pushNamed(context, '/profile'); // ✅ uses route
             },
             tooltip: "Profile",
           ),
           IconButton(
             icon: const Icon(Icons.shopping_cart, color: Colors.brown),
             onPressed: () {
-              Navigator.pushNamed(
+              Navigator.push(
                 context,
-                '/cart',
-                arguments: _cartItems, // pass the cart list here
+                MaterialPageRoute(
+                  builder: (context) => CartScreen(cartItems: _cartItems),
+                ),
               );
             },
             tooltip: "Cart",
@@ -196,20 +199,26 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Featured Books",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              "Featured Books",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             _buildBookList(_featuredBooks),
             const SizedBox(height: 24),
 
-            const Text("New Arrivals",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              "New Arrivals",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             _buildBookList(_newArrivals),
             const SizedBox(height: 24),
 
-            const Text("Bestsellers",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              "Bestsellers",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             _buildBookList(_bestsellers),
             const SizedBox(height: 24),
@@ -227,12 +236,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: const Text("Browse All Books"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.brown,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   textStyle: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

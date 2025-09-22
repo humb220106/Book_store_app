@@ -21,7 +21,7 @@ class AppTheme {
 
 /// ---------------- MAIN ONBOARDING (WELCOME) SCREEN ----------------
 class OnboardingWelcomeScreen extends StatefulWidget {
-  const OnboardingWelcomeScreen({Key? key}) : super(key: key);
+  const OnboardingWelcomeScreen({super.key});
 
   @override
   State<OnboardingWelcomeScreen> createState() =>
@@ -208,7 +208,7 @@ class _OnboardingWelcomeScreenState extends State<OnboardingWelcomeScreen>
 
 /// ---------------- FEATURE SLIDES ----------------
 class OnboardingFeatureSlides extends StatefulWidget {
-  const OnboardingFeatureSlides({Key? key}) : super(key: key);
+  const OnboardingFeatureSlides({super.key});
 
   @override
   State<OnboardingFeatureSlides> createState() =>
@@ -305,8 +305,8 @@ class ProgressIndicatorWidget extends StatelessWidget {
   const ProgressIndicatorWidget({
     required this.currentStep,
     required this.totalSteps,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -328,7 +328,7 @@ class ProgressIndicatorWidget extends StatelessWidget {
 }
 
 class WelcomeLogoWidget extends StatelessWidget {
-  const WelcomeLogoWidget({Key? key}) : super(key: key);
+  const WelcomeLogoWidget({super.key});
   @override
   Widget build(BuildContext context) {
     return Icon(Icons.book, size: 80, color: AppTheme.brown);
@@ -336,7 +336,7 @@ class WelcomeLogoWidget extends StatelessWidget {
 }
 
 class WelcomeContentWidget extends StatelessWidget {
-  const WelcomeContentWidget({Key? key}) : super(key: key);
+  const WelcomeContentWidget({super.key});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -366,8 +366,8 @@ class WelcomeActionsWidget extends StatelessWidget {
   const WelcomeActionsWidget({
     required this.onGetStarted,
     required this.onSkip,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -398,8 +398,8 @@ class NavigationControlsWidget extends StatelessWidget {
     required this.onSkip,
     required this.onNext,
     required this.onContinue,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -449,8 +449,8 @@ class SlideContentWidget extends StatelessWidget {
     required this.backgroundColor,
     required this.height,
     required this.width,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

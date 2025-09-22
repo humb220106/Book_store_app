@@ -7,10 +7,10 @@ class FilterBottomSheet extends StatefulWidget {
   final Function(BookFilter) onApply;
 
   const FilterBottomSheet({
-    Key? key,
+    super.key,
     required this.currentFilter,
     required this.onApply,
-  }) : super(key: key);
+  });
 
   @override
   _FilterBottomSheetState createState() => _FilterBottomSheetState();
