@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 import '../../utils/app_colors.dart';
 
@@ -83,18 +85,29 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     setState(() => _isLoading = true);
-
     try {
-      await _auth.createUserWithEmailAndPassword(
+      // ✅ Create the user in Firebase Authentication
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Signup successful! Please login.")),
-      );
+      // ✅ Get the UID of the newly created user
+      final String uid = userCredential.user!.uid;
 
-      Navigator.pushReplacementNamed(context, '/login');
+      // ✅ Save user data to Firestore inside the existing "users" collection
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+        'role': 'user', // add custom fields if you need
+      });
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Signup successful! Please login.")),
+  );
+
+  Navigator.pushReplacementNamed(context, '/login');
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -324,7 +337,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   children: [
                     IconButton(
                       onPressed: _signUpWithGoogle,
-                      icon: Image.asset("assets/icons/google.png"),
+                      icon: SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Image.asset("assets/icons/google.png"),
+                      ),
                       iconSize: 50,
                     ),
                     const SizedBox(width: 20),

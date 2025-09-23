@@ -5,8 +5,7 @@ import 'book_detail_screen.dart';
 import 'catalog_screen.dart';
 import 'search_screen.dart';
 import '../cart/cart_screen.dart';
-import '../wishlist/wishlist_screen.dart';
-import '../profile/profile_screen.dart'; 
+// ✅ Import Profile
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -229,7 +228,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const CatalogScreen()),
+                      builder: (context) => const CatalogScreen(),
+                    ),
                   );
                 },
                 icon: const Icon(Icons.menu_book),

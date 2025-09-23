@@ -28,7 +28,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
     Navigator.of(context).pushReplacementNamed('/login');
   }
 
- Widget build(BuildContext context) {
+ @override
+  Widget build(BuildContext context) {
   if (widget.email != "admin@bookapp.com") {
     return const Scaffold(
       body: Center(
