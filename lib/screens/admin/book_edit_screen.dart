@@ -52,6 +52,7 @@ class _BookEditScreenState extends State<BookEditScreen> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+
     final book = Book(
       id: widget.book?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
       title: _titleC.text.trim(),
@@ -67,79 +68,156 @@ class _BookEditScreenState extends State<BookEditScreen> {
       isFeatured: _featured,
       createdAt: widget.book?.createdAt ?? DateTime.now(),
     );
-    
 
     try {
       if (widget.book == null) {
         await AdminService.addBook(book);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Book added')));
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('✅ Book added successfully!')),
+        );
       } else {
         await AdminService.updateBook(book);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Book updated')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('✅ Book updated successfully!')),
+        );
       }
-      Navigator.pop(context);
+
+      // Redirect after delay
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pushReplacementNamed(context, '/books');
+      });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Error: $e')),
+      );
+    }
+  }
+
+  Future<void> _delete() async {
+    if (widget.book == null) return;
+
+    try {
+      await AdminService.deleteBook(widget.book!.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('🗑 Book deleted successfully!')),
+      );
+
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pushReplacementNamed(context, '/books');
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Error: $e')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final isEdit = widget.book != null;
+
     return Scaffold(
-      appBar: AppBar(title: Text(isEdit ? 'Edit Book' : 'Add Book')),
+      appBar: AppBar(
+        title: Text(isEdit ? 'Edit Book' : 'Add Book'),
+        actions: [
+          if (isEdit)
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text("Confirm Delete"),
+                    content: const Text("Are you sure you want to delete this book?"),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Cancel")),
+                      TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("Delete", style: TextStyle(color: Colors.red))),
+                    ],
+                  ),
+                );
+                if (confirm == true) _delete();
+              },
+            ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(controller: _titleC, decoration: const InputDecoration(labelText: 'Title'), validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null),
-              TextFormField(controller: _authorC, decoration: const InputDecoration(labelText: 'Author'), validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null),
+              TextFormField(
+                controller: _titleC,
+                decoration: const InputDecoration(labelText: 'Title'),
+                validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: _authorC,
+                decoration: const InputDecoration(labelText: 'Author'),
+                validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
+              ),
               TextFormField(controller: _genreC, decoration: const InputDecoration(labelText: 'Genre')),
-              TextFormField(controller: _priceC, decoration: const InputDecoration(labelText: 'Price'), keyboardType: TextInputType.number, validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Required';
-                return double.tryParse(v.trim()) == null ? 'Invalid price' : null;
-              }),
-             TextFormField(
-  controller: _coverC,
-  decoration: const InputDecoration(labelText: 'Cover Image URL'),
-  onChanged: (_) => setState(() {}), // refresh preview when typing
-),
-
-const SizedBox(height: 12),
-
-if (_coverC.text.trim().isNotEmpty)
-  Center(
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Image.network(
-        _coverC.text.trim(),
-        height: 180,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) =>
-            const Icon(Icons.broken_image, size: 80, color: Colors.grey),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return const SizedBox(
-            height: 180,
-            child: Center(child: CircularProgressIndicator()),
-          );
-        },
-      ),
-    ),
-  ),
-
-              TextFormField(controller: _descC, decoration: const InputDecoration(labelText: 'Description'), maxLines: 4),
-              SwitchListTile(
-  title: const Text('Featured'),
-  value: _featured,
-  onChanged: (v) => setState(() => _featured = v),
-),
-              SwitchListTile(title: const Text('Bestseller'), value: _bestseller, onChanged: (v) => setState(() => _bestseller = v)),
-              SwitchListTile(title: const Text('New Arrival'), value: _newArrival, onChanged: (v) => setState(() => _newArrival = v)),
+              TextFormField(
+                controller: _priceC,
+                decoration: const InputDecoration(labelText: 'Price'),
+                keyboardType: TextInputType.number,
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) return 'Required';
+                  return double.tryParse(v.trim()) == null ? 'Invalid price' : null;
+                },
+              ),
+              TextFormField(
+                controller: _coverC,
+                decoration: const InputDecoration(labelText: 'Cover Image URL'),
+                onChanged: (_) => setState(() {}),
+              ),
               const SizedBox(height: 12),
-              ElevatedButton(onPressed: _save, child: Text(isEdit ? 'Save changes' : 'Add book')),
+              if (_coverC.text.trim().isNotEmpty)
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      _coverC.text.trim(),
+                      height: 180,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.broken_image, size: 80, color: Colors.grey),
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const SizedBox(
+                          height: 180,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              TextFormField(
+                controller: _descC,
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 4,
+              ),
+              SwitchListTile(
+                title: const Text('Featured'),
+                value: _featured,
+                onChanged: (v) => setState(() => _featured = v),
+              ),
+              SwitchListTile(
+                title: const Text('Bestseller'),
+                value: _bestseller,
+                onChanged: (v) => setState(() => _bestseller = v),
+              ),
+              SwitchListTile(
+                title: const Text('New Arrival'),
+                value: _newArrival,
+                onChanged: (v) => setState(() => _newArrival = v),
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: _save,
+                child: Text(isEdit ? 'Save Changes' : 'Add Book'),
+              ),
             ],
           ),
         ),

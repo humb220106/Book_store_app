@@ -9,31 +9,62 @@ class AdminService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // ---------- BOOK CRUD ----------
-  static Future<void> addBook(Book book) async {
-    final doc = _firestore.collection('books').doc(book.id);
-    await doc.set(book.toMap());
-  }
+static Future<void> addBook(Book book) async {
+  final doc = _firestore.collection('books').doc(book.id);
+  final now = DateTime.now();
+
+  await doc.set({
+    ...book.toMap(),
+    'createdAt': FieldValue.serverTimestamp(), // ✅ authoritative server timestamp
+    'createdAtLocal': now,                     // ✅ fallback for instant local ordering
+  });
+}
+
+
 
   static Future<void> updateBook(Book book) async {
-    await _firestore.collection('books').doc(book.id).update(book.toMap());
+    await _firestore.collection('books').doc(book.id).update({
+      ...book.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(), // optional
+    });
   }
 
   static Future<void> deleteBook(String bookId) async {
     await _firestore.collection('books').doc(bookId).delete();
   }
 
-  static Stream<List<Book>> booksStream() {
-    return _firestore
-        .collection('books')
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map(
-          (snap) => snap.docs
-              .map((d) => Book.fromMap(d.id, d.data()))
-              .toList(),
-        );
-  }
+  // static Stream<List<Book>> booksStream() {
+  //   return _firestore
+  //       .collection('books')
+  //       .orderBy('createdAt', descending: true)
+  //       .snapshots()
+  //       .map(
+  //         (snap) => snap.docs.map((d) => Book.fromMap(d.id, d.data())).toList(),
+  //       );
+  // }
 
+//   static Stream<List<Book>> booksStream() {
+//   return _firestore
+//       .collection('books')
+//       .orderBy('createdAt', descending: true)
+//       .orderBy('createdAtLocal', descending: true) // 👈 fallback
+//       .snapshots()
+//       .map(
+//         (snap) => snap.docs
+//             .map((d) => Book.fromMap(d.id, d.data()))
+//             .toList(),
+//       );
+// }
+
+   static Stream<List<Book>> booksStream() {
+  return _firestore
+      .collection('books')
+      .orderBy('createdAtLocal', descending: true)
+      .snapshots()
+      .map(
+        (snap) => snap.docs.map((d) => Book.fromMap(d.id, d.data())).toList(),
+      );
+}
   // ---------- USER DOCUMENTS ----------
   static Stream<List<UserModel>> usersStream() {
     return _firestore
@@ -65,7 +96,7 @@ class AdminService {
 
   static Future<void> deleteUserDoc(String uid) async {
     await _firestore.collection('users').doc(uid).delete();
-    // ⚠️ Note: deleting a user document does NOT delete the Auth account (Admin SDK required).
+    // ⚠ Note: deleting a user document does NOT delete the Auth account (Admin SDK required).
   }
 
   // ---------- ORDERS ----------
@@ -110,7 +141,10 @@ class AdminService {
     // 2) Firestore check (if user is marked as admin)
     try {
       if (_auth.currentUser != null) {
-        final doc = await _firestore.collection('users').doc(_auth.currentUser!.uid).get();
+        final doc = await _firestore
+            .collection('users')
+            .doc(_auth.currentUser!.uid)
+            .get();
         if (doc.exists && (doc['isAdmin'] as bool? ?? false)) {
           return true;
         }

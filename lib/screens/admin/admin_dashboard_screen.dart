@@ -28,15 +28,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
     Navigator.of(context).pushReplacementNamed('/login');
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
-  if (widget.email != "admin@bookapp.com") {
-    return const Scaffold(
-      body: Center(
-        child: Text("❌ You are not authorized to view this page."),
-      ),
-    );
-  }
+    if (widget.email != "admin@bookapp.com") {
+      return const Scaffold(
+        body: Center(
+          child: Text("❌ You are not authorized to view this page."),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(

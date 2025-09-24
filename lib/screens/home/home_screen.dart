@@ -5,7 +5,6 @@ import 'book_detail_screen.dart';
 import 'catalog_screen.dart';
 import 'search_screen.dart';
 import '../cart/cart_screen.dart';
-// ✅ Import Profile
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,25 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Book> _featuredBooks = [];
-  List<Book> _newArrivals = [];
-  List<Book> _bestsellers = [];
   final List<Book> _cartItems = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadBooks();
-  }
-
-  Future<void> _loadBooks() async {
-    final allBooks = await BookService.getBooks();
-    setState(() {
-      _featuredBooks = allBooks.take(5).toList();
-      _newArrivals = allBooks.where((b) => b.isNewArrival).take(5).toList();
-      _bestsellers = allBooks.where((b) => b.isBestseller).take(5).toList();
-    });
-  }
 
   void _navigateToBookDetail(Book book) {
     Navigator.push(
@@ -82,10 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) =>
                                   const Icon(
-                                    Icons.book,
-                                    size: 60,
-                                    color: Colors.brown,
-                                  ),
+                                Icons.book,
+                                size: 60,
+                                color: Colors.brown,
+                              ),
                             ),
                           ),
                         ),
@@ -135,124 +116,134 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F0),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F5F0),
-        elevation: 0,
-        title: const Text(
-          "Book Store",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu_book, color: Colors.brown),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CatalogScreen()),
-              );
-            },
-            tooltip: "Browse Catalog",
-          ),
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.brown),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SearchScreen()),
-              );
-            },
-            tooltip: "Search",
-          ),
-          IconButton(
-            icon: const Icon(Icons.favorite_border, color: Colors.brown),
-            onPressed: () {
-              Navigator.pushNamed(context, '/wishlist'); // ✅ uses route
-            },
-            tooltip: "Wishlist",
-          ),
-          IconButton(
-            icon: const Icon(Icons.person, color: Colors.brown),
-            onPressed: () {
-              Navigator.pushNamed(context, '/profile'); // ✅ uses route
-            },
-            tooltip: "Profile",
-          ),
-          IconButton(
-            icon: const Icon(Icons.shopping_cart, color: Colors.brown),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CartScreen(cartItems: _cartItems),
-                ),
-              );
-            },
-            tooltip: "Cart",
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Featured Books",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildBookList(_featuredBooks),
-            const SizedBox(height: 24),
+    return StreamBuilder<List<Book>>(
+      stream: BookService.getBooksStream(),
+      builder: (context, snapshot) {
+        final books = snapshot.data ?? [];
 
-            const Text(
-              "New Arrivals",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildBookList(_newArrivals),
-            const SizedBox(height: 24),
+        final featuredBooks = books.where((b) => b.isFeatured).take(5).toList();
+        final newArrivals = books.where((b) => b.isNewArrival).take(5).toList();
+        final bestsellers = books.where((b) => b.isBestseller).take(5).toList();
 
-            const Text(
-              "Bestsellers",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        return Scaffold(
+          backgroundColor: const Color(0xFFF5F5F0),
+          appBar: AppBar(
+            backgroundColor: const Color(0xFFF5F5F0),
+            elevation: 0,
+            title: const Text(
+              "Book Store",
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 12),
-            _buildBookList(_bestsellers),
-            const SizedBox(height: 24),
-
-            Center(
-              child: ElevatedButton.icon(
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.menu_book, color: Colors.brown),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CatalogScreen()),
+                  );
+                },
+                tooltip: "Browse Catalog",
+              ),
+              IconButton(
+                icon: const Icon(Icons.search, color: Colors.brown),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SearchScreen()),
+                  );
+                },
+                tooltip: "Search",
+              ),
+              IconButton(
+                icon: const Icon(Icons.favorite_border, color: Colors.brown),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/wishlist');
+                },
+                tooltip: "Wishlist",
+              ),
+              IconButton(
+                icon: const Icon(Icons.person, color: Colors.brown),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/profile');
+                },
+                tooltip: "Profile",
+              ),
+              IconButton(
+                icon: const Icon(Icons.shopping_cart, color: Colors.brown),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CatalogScreen(),
+                      builder: (context) => CartScreen(cartItems: _cartItems),
                     ),
                   );
                 },
-                icon: const Icon(Icons.menu_book),
-                label: const Text("Browse All Books"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.brown,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                tooltip: "Cart",
+              ),
+            ],
+          ),
+          body: snapshot.connectionState == ConnectionState.waiting
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Featured Books",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildBookList(featuredBooks),
+                      const SizedBox(height: 24),
+                      const Text(
+                        "New Arrivals",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildBookList(newArrivals),
+                      const SizedBox(height: 24),
+                      const Text(
+                        "Bestsellers",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildBookList(bestsellers),
+                      const SizedBox(height: 24),
+                      Center(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CatalogScreen(),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.menu_book),
+                          label: const Text("Browse All Books"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.brown,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -18,18 +18,17 @@ import 'screens/cart/cart_screen.dart';
 import 'screens/orders/order_history_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
 import '../../models/book.dart';
-
+// import '../../services/book_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // ✅ Initialize Firebase with generated options
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // await BookService.seedDefaultBooks();
+
   runApp(const BookApp());
-  
 }
 
 class BookApp extends StatelessWidget {
@@ -61,10 +60,10 @@ class BookApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/wishlist': (context) => const WishlistScreen(),
-       '/cart': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments as List<Book>;
-           return CartScreen(cartItems: args);
-            },
+        '/cart': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as List<Book>;
+          return CartScreen(cartItems: args);
+        },
 
         '/orders': (context) => const OrderHistoryScreen(),
         '/admin-dashboard': (context) {
