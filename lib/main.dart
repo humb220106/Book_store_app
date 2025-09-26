@@ -15,7 +15,7 @@ import 'screens/home/home_screen.dart';
 import 'screens/profile/profile_screen.dart';
 import 'screens/wishlist/wishlist_screen.dart';
 import 'screens/cart/cart_screen.dart';
-import 'screens/orders/order_history_screen.dart';
+import 'screens/orders/OrdersScreen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
 import '../../models/book.dart';
 // import '../../services/book_service.dart';
@@ -62,10 +62,11 @@ class BookApp extends StatelessWidget {
         '/wishlist': (context) => const WishlistScreen(),
         '/cart': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as List<Book>;
-          return CartScreen(cartItems: args);
+         return const CartScreen();
+
         },
 
-        '/orders': (context) => const OrderHistoryScreen(),
+        '/orders': (context) => const OrdersScreen(),
         '/admin-dashboard': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as String;
           return AdminDashboardScreen(email: args);

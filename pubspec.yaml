@@ -47,6 +47,7 @@ dependencies:
   firebase_core: ^3.6.0
   firebase_auth: ^5.3.1
   cloud_firestore: ^5.4.4
+  intl: ^0.19.0   # ✅ add this line 
 
   provider: ^6.1.2
   fluttertoast: ^8.2.8
