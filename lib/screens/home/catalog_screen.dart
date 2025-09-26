@@ -39,9 +39,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
     );
   }
 
+  /// Wishlist icon that updates in real-time
   Widget _wishlistIcon(Book book) {
-    return FutureBuilder<bool>(
-      future: WishlistService.isInWishlist(book.id),
+    return StreamBuilder<bool>(
+      stream: WishlistService.isInWishlistStream(book.id),
       builder: (context, snapshot) {
         final isInWishlist = snapshot.data ?? false;
         return IconButton(
@@ -55,7 +56,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
             } else {
               await WishlistService.addToWishlist(book);
             }
-            setState(() {});
           },
         );
       },
@@ -84,16 +84,25 @@ class _CatalogScreenState extends State<CatalogScreen> {
         // Apply filters
         final filteredBooks = allBooks.where((book) {
           if (_currentFilter.genres?.isNotEmpty == true &&
-              !_currentFilter.genres!.contains(book.genre)) return false;
+              !_currentFilter.genres!.contains(book.genre)) {
+            return false;
+          }
           if (_currentFilter.authors?.isNotEmpty == true &&
-              !_currentFilter.authors!.contains(book.author)) return false;
+              !_currentFilter.authors!.contains(book.author)) {
+            return false;
+          }
           if (_currentFilter.bestsellersOnly && !book.isBestseller) return false;
           if (_currentFilter.newArrivalsOnly && !book.isNewArrival) return false;
           if (book.price < (_currentFilter.minPrice ?? 0) ||
-              book.price > (_currentFilter.maxPrice ?? double.infinity)) return false;
+              book.price > (_currentFilter.maxPrice ?? double.infinity)) {
+            return false;
+          }
           if (book.rating < (_currentFilter.minRating ?? 0)) return false;
           if (_currentFilter.searchQuery.isNotEmpty &&
-              !book.title.toLowerCase().contains(_currentFilter.searchQuery.toLowerCase())) return false;
+              !book.title.toLowerCase().contains(
+                  _currentFilter.searchQuery.toLowerCase())) {
+            return false;
+          }
           return true;
         }).toList();
 
@@ -125,7 +134,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
               : (_isGridView
                   ? GridView.builder(
                       padding: const EdgeInsets.all(16),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.65,
                         crossAxisSpacing: 16,
@@ -195,7 +205,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
     return ListTile(
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Image.network(book.coverImageUrl, width: 50, fit: BoxFit.cover),
+        child: Image.network(book.coverImageUrl,
+            width: 50, fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.book, size: 30, color: Colors.brown)),
       ),
       title: Text(book.title),
       subtitle: Text(book.author),

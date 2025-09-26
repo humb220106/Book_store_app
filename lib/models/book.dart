@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Book {
@@ -19,74 +20,19 @@ class Book {
     required this.id,
     required this.title,
     required this.author,
-    required this.description,
-    required this.coverImageUrl,
-    required this.genre,
-    required this.price,
-    required this.rating,
-    required this.reviewCount,
+    this.description = "",
+    this.coverImageUrl = "",
+    this.genre = "Other",
+    this.price = 0.0,
+    this.rating = 0.0,
+    this.reviewCount = 0,
     this.isFeatured = false,
     this.isBestseller = false,
     this.isNewArrival = false,
     required this.createdAt,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'author': author,
-      'description': description,
-      'coverImageUrl': coverImageUrl,
-      'genre': genre,
-      'price': price,
-      'rating': rating,
-      'reviewCount': reviewCount,
-      'isFeatured': isFeatured,
-      'isBestseller': isBestseller,
-      'isNewArrival': isNewArrival,
-      'createdAt': createdAt.toIso8601String(),
-    };
-  }
-
-
-  /// Factory to create a Book from Firestore map
-  factory Book.fromMap(String id, Map<String, dynamic> data) {
-  DateTime createdAt;
-
-  if (data['createdAtLocal'] is Timestamp) {
-    createdAt = (data['createdAtLocal'] as Timestamp).toDate();
-  } else if (data['createdAt'] is Timestamp) {
-    createdAt = (data['createdAt'] as Timestamp).toDate();
-  } else if (data['createdAt'] is DateTime) {
-    createdAt = data['createdAt'];
-  } else if (data['createdAt'] != null) {
-    createdAt = DateTime.tryParse(data['createdAt'].toString()) ?? DateTime.now();
-  } else {
-    createdAt = DateTime.now();
-  }
-
-  return Book(
-    id: id,
-    title: (data['title'] as String?) ?? '',
-    author: (data['author'] as String?) ?? '',
-    description: (data['description'] as String?) ?? '',
-    coverImageUrl: (data['coverImageUrl'] as String?) ?? '',
-    genre: (data['genre'] as String?) ?? 'Other',
-    price: (data['price'] as num?)?.toDouble() ?? 0.0,
-    rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
-    reviewCount: (data['reviewCount'] as num?)?.toInt() ?? 0,
-    isFeatured: (data['isFeatured'] as bool?) ?? false,
-    isBestseller: (data['isBestseller'] as bool?) ?? false,
-    isNewArrival: (data['isNewArrival'] as bool?) ?? false,
-    createdAt: createdAt,
-  );
-}
-  /// Factory from DocumentSnapshot
-  factory Book.fromSnapshot(DocumentSnapshot doc) =>
-      Book.fromMap(doc.id, doc.data() as Map<String, dynamic>);
-
-  /// Convert Book to Firestore map
+  /// ✅ Convert Book to Firestore map (without `id`, since Firestore doc.id already stores it)
   Map<String, dynamic> toMap() {
     return {
       'title': title,
@@ -103,4 +49,29 @@ class Book {
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }
+
+  /// ✅ Create Book from Firestore map
+  factory Book.fromMap(String id, Map<String, dynamic> data) {
+    return Book(
+      id: id,
+      title: (data['title'] as String?) ?? '',
+      author: (data['author'] as String?) ?? '',
+      description: (data['description'] as String?) ?? '',
+      coverImageUrl: (data['coverImageUrl'] as String?) ?? '',
+      genre: (data['genre'] as String?) ?? 'Other',
+      price: (data['price'] as num?)?.toDouble() ?? 0.0,
+      rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
+      reviewCount: (data['reviewCount'] as num?)?.toInt() ?? 0,
+      isFeatured: (data['isFeatured'] as bool?) ?? false,
+      isBestseller: (data['isBestseller'] as bool?) ?? false,
+      isNewArrival: (data['isNewArrival'] as bool?) ?? false,
+      createdAt: (data['createdAt'] is Timestamp)
+          ? (data['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+    );
+  }
+
+  /// ✅ Shortcut for DocumentSnapshot
+  factory Book.fromSnapshot(DocumentSnapshot doc) =>
+      Book.fromMap(doc.id, doc.data() as Map<String, dynamic>);
 }

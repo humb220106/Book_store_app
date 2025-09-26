@@ -50,20 +50,23 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+  /// Wishlist Icon using live stream
   Widget _wishlistIcon(Book book) {
-    return FutureBuilder<bool>(
-      future: WishlistService.isInWishlist(book.id),
+    return StreamBuilder<bool>(
+      stream: WishlistService.isInWishlistStream(book.id),
       builder: (context, snapshot) {
         final isInWishlist = snapshot.data ?? false;
         return IconButton(
-          icon: Icon(isInWishlist ? Icons.favorite : Icons.favorite_border, color: Colors.red),
-          onPressed: () async {
+          icon: Icon(
+            isInWishlist ? Icons.favorite : Icons.favorite_border,
+            color: Colors.red,
+          ),
+          onPressed: () {
             if (isInWishlist) {
-              await WishlistService.removeFromWishlist(book.id);
+              WishlistService.removeFromWishlist(book.id);
             } else {
-              await WishlistService.addToWishlist(book);
+              WishlistService.addToWishlist(book);
             }
-            setState(() {});
           },
         );
       },
@@ -83,7 +86,8 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         title: const Text(
           'Search Books',
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
       ),
       body: Column(
@@ -95,7 +99,13 @@ class _SearchScreenState extends State<SearchScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  )
+                ],
               ),
               child: TextField(
                 controller: _searchController,
@@ -105,7 +115,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   hintText: 'Search for books, authors...',
                   prefixIcon: Icon(Icons.search, color: Colors.grey),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 ),
               ),
             ),
@@ -117,7 +128,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 ? const Center(child: Text('No books found'))
                 : GridView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 0.65,
                       crossAxisSpacing: 16,
@@ -135,7 +147,13 @@ class _SearchScreenState extends State<SearchScreen> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
-                                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 12, offset: const Offset(0, 4))],
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  )
+                                ],
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,12 +161,20 @@ class _SearchScreenState extends State<SearchScreen> {
                                   Expanded(
                                     flex: 4,
                                     child: ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                                      borderRadius:
+                                          const BorderRadius.vertical(
+                                              top: Radius.circular(12)),
                                       child: Image.network(
                                         book.coverImageUrl,
                                         width: double.infinity,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.book, size: 40, color: Colors.brown),
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(
+                                          Icons.book,
+                                          size: 40,
+                                          color: Colors.brown,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -157,20 +183,25 @@ class _SearchScreenState extends State<SearchScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             book.title,
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             book.author,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey),
                                           ),
                                         ],
                                       ),
@@ -181,7 +212,11 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
 
                             // Wishlist Icon
-                            Positioned(top: 8, right: 8, child: _wishlistIcon(book)),
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: _wishlistIcon(book),
+                            ),
                           ],
                         ),
                       );

@@ -170,17 +170,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 tooltip: "Profile",
               ),
               IconButton(
-                icon: const Icon(Icons.shopping_cart, color: Colors.brown),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CartScreen(cartItems: _cartItems),
-                    ),
-                  );
-                },
-                tooltip: "Cart",
-              ),
+                     icon: const Icon(Icons.shopping_cart, color: Colors.brown),
+                    onPressed: () {
+                Navigator.push(
+                 context,
+             MaterialPageRoute(
+             builder: (context) => const CartScreen(), // ✅ no cartItems
+      ),
+    );
+  },
+  tooltip: "Cart",
+),
+
+IconButton(
+  icon: const Icon(Icons.list_alt, color: Colors.brown),
+  tooltip: "My Orders",
+  onPressed: () {
+    Navigator.pushNamed(context, "/orders");
+  },
+),
             ],
           ),
           body: snapshot.connectionState == ConnectionState.waiting

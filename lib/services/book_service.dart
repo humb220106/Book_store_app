@@ -57,59 +57,59 @@ class BookService {
       ),
     ];
 
-  for (var book in defaults) {
-    final now = DateTime.now();
-    await _firestore.collection('books').doc(book.id).set({
-      ...book.toMap(),
-      'createdAt': FieldValue.serverTimestamp(),
-      'createdAtLocal': now,
-    });
+    for (var book in defaults) {
+      final now = DateTime.now();
+      await _firestore.collection('books').doc(book.id).set({
+        ...book.toMap(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'createdAtLocal': now,
+      });
+    }
   }
-}
 
-/// Get all books
-static Future<List<Book>> getBooks() async {
-  final snap = await _firestore
-      .collection('books')
-      .orderBy('createdAtLocal', descending: true)
-      .get();
-  return snap.docs.map((d) => Book.fromMap(d.id, d.data())).toList();
-}
+  /// Get all books
+  static Future<List<Book>> getBooks() async {
+    final snap = await _firestore
+        .collection('books')
+        .orderBy('createdAtLocal', descending: true)
+        .get();
+    return snap.docs.map((d) => Book.fromMap(d.id, d.data())).toList();
+  }
 
-/// Stream all books (for UI)
-// static Stream<List<Book>> getBooksStream() {
-//   return _firestore
-//       .collection('books')
-//       .orderBy('createdAt', descending: true)
-//       .snapshots()
-//       .map(
-//         (snap) =>
-//             snap.docs.map((doc) => Book.fromMap(doc.id, doc.data())).toList(),
-//       );
-// }
+  /// Stream all books (for UI)
+  // static Stream<List<Book>> getBooksStream() {
+  //   return _firestore
+  //       .collection('books')
+  //       .orderBy('createdAt', descending: true)
+  //       .snapshots()
+  //       .map(
+  //         (snap) =>
+  //             snap.docs.map((doc) => Book.fromMap(doc.id, doc.data())).toList(),
+  //       );
+  // }
 
-//   static Stream<List<Book>> getBooksStream() {
-//   return _firestore
-//       .collection('books')
-//       .orderBy('createdAt', descending: true)
-//       .orderBy('createdAtLocal', descending: true) // ✅ fallback ordering
-//       .snapshots()
-//       .map(
-//         (snap) => snap.docs
-//             .map((d) => Book.fromMap(d.id, d.data()))
-//             .toList(),
-//       );
-// }
+  //   static Stream<List<Book>> getBooksStream() {
+  //   return _firestore
+  //       .collection('books')
+  //       .orderBy('createdAt', descending: true)
+  //       .orderBy('createdAtLocal', descending: true) // ✅ fallback ordering
+  //       .snapshots()
+  //       .map(
+  //         (snap) => snap.docs
+  //             .map((d) => Book.fromMap(d.id, d.data()))
+  //             .toList(),
+  //       );
+  // }
 
-static Stream<List<Book>> getBooksStream() {
-  return _firestore
-      .collection('books')
-      .orderBy('createdAtLocal', descending: true) // only one field
-      .snapshots()
-      .map(
-        (snap) => snap.docs.map((d) => Book.fromMap(d.id, d.data())).toList(),
-      );
-}
+  static Stream<List<Book>> getBooksStream() {
+    return _firestore
+        .collection('books')
+        .orderBy('createdAtLocal', descending: true) // only one field
+        .snapshots()
+        .map(
+          (snap) => snap.docs.map((d) => Book.fromMap(d.id, d.data())).toList(),
+        );
+  }
 
   // Optional: fetch all books once
   //   static Future<List<Book>> getBooks() async {

@@ -3,43 +3,20 @@ import '../../models/book.dart';
 import '../../services/wishlist_service.dart';
 import '../home/book_detail_screen.dart';
 
-class WishlistScreen extends StatefulWidget {
+class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
 
-  @override
-  State<WishlistScreen> createState() => _WishlistScreenState();
-}
-
-class _WishlistScreenState extends State<WishlistScreen> {
-  List<Book> _wishlist = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadWishlist();
-  }
-
-  Future<void> _loadWishlist() async {
-    final books = await WishlistService.getWishlist();
-    setState(() {
-      _wishlist = books;
-      _isLoading = false;
-    });
-  }
-
-  Future<void> _removeBook(Book book) async {
-    await WishlistService.removeFromWishlist(book.id);
-    _loadWishlist();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${book.title} removed from wishlist')),
-    );
-  }
-
-  void _navigateToBookDetail(Book book) {
+  void _navigateToBookDetail(BuildContext context, Book book) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => BookDetailScreen(book: book)),
+    );
+  }
+
+  Future<void> _removeBook(BuildContext context, Book book) async {
+    await WishlistService.removeFromWishlist(book.id);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${book.title} removed from wishlist')),
     );
   }
 
@@ -47,7 +24,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Wishlist', style: TextStyle(color: Colors.black)),
+        title: const Text(
+          'Wishlist',
+          style: TextStyle(color: Colors.black),
+        ),
         backgroundColor: const Color(0xFFF5F5F0),
         elevation: 0,
         leading: IconButton(
@@ -56,32 +36,81 @@ class _WishlistScreenState extends State<WishlistScreen> {
         ),
       ),
       backgroundColor: const Color(0xFFF5F5F0),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _wishlist.isEmpty
-              ? const Center(child: Text('Your wishlist is empty'))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _wishlist.length,
-                  itemBuilder: (context, index) {
-                    final book = _wishlist[index];
-                    return GestureDetector(
-                      onTap: () => _navigateToBookDetail(book),
-                      child: Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: Image.network(book.coverImageUrl, width: 50, fit: BoxFit.cover),
-                          title: Text(book.title),
-                          subtitle: Text(book.author),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _removeBook(book),
-                          ),
-                        ),
+      body: StreamBuilder<List<Book>>(
+        stream: WishlistService.getWishlistStream(), // 👈 Live updates
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text(
+                'Your wishlist is empty',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+            );
+          }
+
+          final wishlist = snapshot.data!;
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: wishlist.length,
+            itemBuilder: (context, index) {
+              final book = wishlist[index];
+              return GestureDetector(
+                onTap: () => _navigateToBookDetail(context, book),
+                child: Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 2,
+                  child: ListTile(
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        book.coverImageUrl,
+                        width: 50,
+                        height: 70,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.book,
+                                size: 40, color: Colors.brown),
                       ),
-                    );
-                  },
+                    ),
+                    title: Text(
+                      book.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 14),
+                    ),
+                    subtitle: Text(
+                      book.author,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _removeBook(context, book),
+                    ),
+                  ),
                 ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

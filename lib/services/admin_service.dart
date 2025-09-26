@@ -100,32 +100,32 @@ static Future<void> addBook(Book book) async {
   }
 
   // ---------- ORDERS ----------
-  static Stream<List<Map<String, dynamic>>> ordersStream() {
-    return _firestore
-        .collection('orders')
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map(
-          (snap) => snap.docs.map((d) {
-            final data = d.data();
-            data['id'] = d.id;
-            return data;
-          }).toList(),
-        );
-  }
+  // static Stream<List<Map<String, dynamic>>> ordersStream() {
+  //   return _firestore
+  //       .collection('orders')
+  //       .orderBy('createdAt', descending: true)
+  //       .snapshots()
+  //       .map(
+  //         (snap) => snap.docs.map((d) {
+  //           final data = d.data();
+  //           data['id'] = d.id;
+  //           return data;
+  //         }).toList(),
+  //       );
+  // }
 
-  static Future<void> updateOrderStatus(
-    String orderId,
-    String newStatus,
-  ) async {
-    await _firestore.collection('orders').doc(orderId).update({
-      'status': newStatus,
-    });
-  }
+  // static Future<void> updateOrderStatus(
+  //   String orderId,
+  //   String newStatus,
+  // ) async {
+  //   await _firestore.collection('orders').doc(orderId).update({
+  //     'status': newStatus,
+  //   });
+  // }
 
-  static Future<void> deleteOrder(String orderId) async {
-    await _firestore.collection('orders').doc(orderId).delete();
-  }
+  // static Future<void> deleteOrder(String orderId) async {
+  //   await _firestore.collection('orders').doc(orderId).delete();
+  // }
 
   // ---------- ADMIN CHECK ----------
   static Future<bool> isCurrentUserAdmin({
