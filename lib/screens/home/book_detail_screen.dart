@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/book.dart';
-import '../../services/cart_service.dart'; // We'll create this
-import '../../widgets/review_list.dart';  // We'll create this
+import '../../services/cart_service.dart'; 
+import '../../widgets/review_list.dart'; 
 
 class BookDetailScreen extends StatelessWidget {
   final Book book;
@@ -86,29 +86,34 @@ class BookDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Add to Cart Button
-            Center(
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.brown,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: () => _addToCart(context),
-                icon: const Icon(Icons.shopping_cart),
-                label: const Text(
-                  "Add to Cart",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
+           // Add to Cart Button
+Center(
+  child: ElevatedButton.icon(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.brown,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30,
+        vertical: 12,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+    onPressed: () => _addToCart(context), // ✅ now adds to CartService
+    icon: const Icon(Icons.shopping_cart, color: Colors.white),
+    label: const Text(
+      "Add to Cart",
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+    ),
+  ),
+),
 
-            const SizedBox(height: 30),
+const SizedBox(height: 30),
+
 
             // Reviews
             const Text(

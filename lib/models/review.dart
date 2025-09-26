@@ -2,54 +2,56 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Review {
   final String id;
-  final String bookId;
   final String userId;
-  final String userName;
+  final String bookId;
   final int rating;
   final String comment;
-  final DateTime createdAt;
-  final int helpfulCount;
-  final int notHelpfulCount;
+  final DateTime date;
+  final List<String> likes;
 
   Review({
     required this.id,
-    required this.bookId,
     required this.userId,
-    required this.userName,
+    required this.bookId,
     required this.rating,
     required this.comment,
-    required this.createdAt,
-    this.helpfulCount = 0,
-    this.notHelpfulCount = 0,
+    required this.date,
+    required this.likes,
   });
 
-  factory Review.fromMap(String id, Map<String, dynamic> data) {
-    return Review(
-      id: id,
-      bookId: data['bookId'] ?? '',
-      userId: data['userId'] ?? '',
-      userName: data['userName'] ?? 'Anonymous',
-      rating: data['rating'] ?? 0,
-      comment: data['comment'] ?? '',
-      createdAt: (data['createdAt'] is Timestamp)
-          ? (data['createdAt'] as Timestamp).toDate()
-          : DateTime.tryParse(data['createdAt']?.toString() ?? '') ??
-              DateTime.now(),
-      helpfulCount: data['helpfulCount'] ?? 0,
-      notHelpfulCount: data['notHelpfulCount'] ?? 0,
-    );
-  }
-
+  // Convert Review object to Firestore map
   Map<String, dynamic> toMap() {
     return {
-      'bookId': bookId,
       'userId': userId,
-      'userName': userName,
+      'bookId': bookId,
       'rating': rating,
       'comment': comment,
-      'createdAt': createdAt,
-      'helpfulCount': helpfulCount,
-      'notHelpfulCount': notHelpfulCount,
+      'date': Timestamp.fromDate(date), // Always save as Timestamp
+      'likes': likes,
     };
+  }
+
+  // Create Review object from Firestore map
+  factory Review.fromMap(Map<String, dynamic> map, String id) {
+    final dynamic dateValue = map['date'];
+    DateTime parsedDate;
+
+    if (dateValue is Timestamp) {
+      parsedDate = dateValue.toDate();
+    } else if (dateValue is String) {
+      parsedDate = DateTime.parse(dateValue);
+    } else {
+      parsedDate = DateTime.now(); // fallback to current time
+    }
+
+    return Review(
+      id: id,
+      userId: map['userId'] ?? '',
+      bookId: map['bookId'] ?? '',
+      rating: map['rating'] ?? 0,
+      comment: map['comment'] ?? '',
+      date: parsedDate,
+      likes: List<String>.from(map['likes'] ?? []),
+    );
   }
 }
