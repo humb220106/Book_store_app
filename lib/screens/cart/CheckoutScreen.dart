@@ -98,7 +98,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 child: const Text(
                   "Proceed to Payment",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             )

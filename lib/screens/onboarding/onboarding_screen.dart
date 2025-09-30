@@ -342,7 +342,7 @@ class WelcomeContentWidget extends StatelessWidget {
     return Column(
       children: const [
         Text(
-          "Welcome to BookApp",
+          "Welcome to ChapterHouse",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,

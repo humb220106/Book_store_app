@@ -159,7 +159,7 @@ class CartScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text("Proceed to Checkout", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: const Text("Proceed to Checkout", style: TextStyle( color: Colors.white,fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),

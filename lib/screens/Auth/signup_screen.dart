@@ -367,6 +367,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: Text(
                         "Login",
                         style: TextStyle(
+                          // color: Colors.white,
                           color: AppColors.brown1,
                           fontWeight: FontWeight.bold,
                         ),

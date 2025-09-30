@@ -229,22 +229,25 @@ IconButton(
                               ),
                             );
                           },
-                          icon: const Icon(Icons.menu_book),
-                          label: const Text("Browse All Books"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.brown,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            textStyle: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                           icon: const Icon(
+    Icons.menu_book,
+    color: Colors.white, // ✅ Make book logo white
+  ),
+  label: const Text(
+    "Browse All Books",
+    style: TextStyle(
+      color: Colors.white, // ✅ Make text white
+      fontSize: 16,
+      fontWeight: FontWeight.bold, // ✅ Bold text
+    ),
+  ),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.brown, // ✅ Keep brown background
+    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+  ),
                         ),
                       ),
                     ],

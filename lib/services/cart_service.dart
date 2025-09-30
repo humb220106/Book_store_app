@@ -71,7 +71,7 @@ class CartService {
         .collection('cart')
         .snapshots()
         .map((snap) => snap.docs
-            .map((doc) => Book.fromMap(doc.id, doc.data() as Map<String, dynamic>))
+            .map((doc) => Book.fromMap(doc.id, doc.data()))
             .toList());
   }
 

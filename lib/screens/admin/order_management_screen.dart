@@ -112,7 +112,7 @@ class OrderManagementScreen extends StatelessWidget {
                                 style: const TextStyle(color: Colors.grey),
                               ),
                             ),
-                          ButtonBar(
+                          OverflowBar(
                             alignment: MainAxisAlignment.end,
                             children: [
                               TextButton.icon(
